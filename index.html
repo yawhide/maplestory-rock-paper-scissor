@@ -7,6 +7,11 @@
 
 <script>
   let guesses = {};
+  const counter = {
+    rock: 'paper',
+    paper: 'scissor',
+    scissor: 'rock',
+  }
 
   reset();
 
@@ -68,7 +73,7 @@
     }
     if (lowest.length === 1) {
       // choose least common one
-      return lowest[0];
+      return counter[lowest[0]];
     }
     lowestSet = new Set(lowest);
     // optimize for a tie + win
