@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<p id="next-guess"></p>
+<button id="rock">Rock</button>
+<button id="paper">Paper</button>
+<button id="scissor">Scissor</button>
+<button id="reset">Reset</button>
+
+<script>
+  let guesses = {};
+
+  reset();
+
+  $nextGuess = document.querySelector("#next-guess");
+  $rock = document.querySelector("#rock");
+  $paper = document.querySelector("#paper");
+  $scissor = document.querySelector("#scissor");
+  $reset = document.querySelector("#reset");
+
+  $rock.onclick = () => { guesses.rock++; displayNextGuess(); };
+  $paper.onclick = () => { guesses.paper++; displayNextGuess(); };
+  $scissor.onclick = () => { guesses.scissor++; displayNextGuess(); };
+
+  $reset.onclick = () => { reset(); displayNextGuess(); };
+
+  displayNextGuess();
+
+  function reset() {
+    guesses = {
+      rock: 0,
+      paper: 0,
+      scissor: 0,
+    }
+  };
+
+  function displayNextGuess() {
+    const debugNode = document.createTextNode(JSON.stringify(guesses, null, 2));
+    const guessNode = document.createTextNode(nextGuess());
+
+    if($nextGuess.childNodes.length) {
+      $nextGuess.replaceChild(debugNode, $nextGuess.childNodes[0]);
+      $nextGuess.replaceChild(guessNode, $nextGuess.childNodes[1]);
+    } else {
+      $nextGuess.appendChild(debugNode);
+      $nextGuess.appendChild(guessNode);
+    }
+  };
+
+  function nextGuess() {
+    let lowest = [];
+    let min = 4;
+    Object.keys(guesses).forEach(key => {
+      let num = guesses[key];
+      if (num < min) {
+        min = num;
+      }
+    });
+
+    Object.keys(guesses).forEach(key => {
+      let num = guesses[key];
+      if (num === min) {
+        lowest.push(key)
+      }
+    });
+
+    if (lowest.length === 3) {
+      // randomly choose one
+      return lowest[Math.floor(Math.random() * lowest.length)];
+    }
+    if (lowest.length === 1) {
+      // choose least common one
+      return lowest[0];
+    }
+    lowestSet = new Set(lowest);
+    // optimize for a tie + win
+    if (lowestSet.has('paper') && lowestSet.has('rock')) {
+      return 'paper';
+    }
+    if (lowestSet.has('paper') && lowestSet.has('scissor')) {
+      return 'scissor';
+    }
+    if (lowestSet.has('rock') && lowestSet.has('scissor')) {
+      return 'rock';
+    }
+    return 'ERROR           RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR';
+  }
+</script>
